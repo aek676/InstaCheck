@@ -44,6 +44,7 @@ class instaspy:
 
         #-------search for victim's username starts
         #click search bar
+        sleep(1)
         browser.find_element(By.XPATH, "//span[text()='Search']").click()
         #enter victim's username and clicking Search
         browser.find_element(By.XPATH, "//input[@placeholder='Search']").send_keys(self.target_username)
@@ -59,19 +60,24 @@ class instaspy:
         browser.implicitly_wait(5)
 
         #clicking and opening followers tabs and getting maximum numbers of followers
-        max = int(browser.find_element(By.XPATH, "/html[1]/body[1]/div[1]/section[1]/main[1]/div[1]/header[1]/section[1]/ul[1]/li[2]/a[1]/span[1]").get_attribute('title').replace(',',''))
-        browser.find_element(By.XPATH, "//a[@class='-nal3 '][@href='/"+self.target_username+"/followers/']").click()
-        sleep(0.5)
+        max = int(browser.find_element(By.CSS_SELECTOR, 'a[href*="/followers/"] span[title]').get_attribute('title'))
 
-        followersList = browser.find_element(By.CSS_SELECTOR, 'div[role=\'dialog\'] ul')
-        numberOfFollowersInList = len(followersList.find_elements(By.CSS_SELECTOR, 'li'))
+        browser.find_element(By.CSS_SELECTOR, 'a[href*="/followers/"] span[title]').click()
+        sleep(2)
+
+        # followersList = browser.find_element(By.CSS_SELECTOR, 'div[role=\'dialog\'] ul')
+        followersList = (browser.find_elements(By.CSS_SELECTOR, 'div[style*="position: relative"]'))[-1]
+        numberOfFollowersInList = len(followersList.find_elements(By.XPATH, './div'))
         temp = [numberOfFollowersInList, 0]
         followersList.click()
+        
         actionChain = webdriver.ActionChains(browser)
         while (numberOfFollowersInList < max):
-            actionChain.key_down(Keys.SPACE).key_up(Keys.SPACE).perform()
+            # actionChain.key_down(Keys.SPACE).key_up(Keys.SPACE).perform()
+            last_child = followersList.find_elements(By.XPATH, './div')[-1]
+            browser.execute_script("arguments[0].scrollIntoView(true);", last_child)
             sleep(1)
-            numberOfFollowersInList = len(followersList.find_elements(By.CSS_SELECTOR, 'li'))
+            numberOfFollowersInList = len(followersList.find_elements(By.XPATH, './div'))
             sleep(1)
             if (numberOfFollowersInList == temp[1]):
                 break
