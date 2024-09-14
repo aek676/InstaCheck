@@ -5,6 +5,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 
+import User
+
 class instaspy:
     def __init__(self, username, password, target_username):
         self.username = username
@@ -86,9 +88,14 @@ class instaspy:
                 temp[0] = numberOfFollowersInList
 
         followers = []
-        for user in followersList.find_elements(By.CSS_SELECTOR, 'li'):
+        for user in followersList.find_elements(By.XPATH, './div'):
+            # userLink = user.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
             userLink = user.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
-            followers.append(userLink)
+            img = user.find_element(By.CSS_SELECTOR, 'img').get_attribute('src')
+            username = user.find_element(By.CSS_SELECTOR, '._ap3a._aaco._aacw._aacx._aad7._aade').text
+            name = user.find_element(By.CSS_SELECTOR, '.x1lliihq.x193iq5w.x6ikm8r.x10wlt62.xlyipyv.xuxw1ft').text
+
+            followers.append(User(username, name, img, userLink))
             if (len(followers) == max):
                 break
 
@@ -122,7 +129,11 @@ class instaspy:
 
         following = []
         for user in followingList.find_elements(By.CSS_SELECTOR, 'li'):
+            # userLink = user.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
             userLink = user.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
+            img = user.find_element(By.CSS_SELECTOR, 'img').get_attribute('src')
+            username = user.find_element(By.CSS_SELECTOR, '._ap3a._aaco._aacw._aacx._aad7._aade').text
+            name = user.find_element(By.CSS_SELECTOR, '.x1lliihq.x193iq5w.x6ikm8r.x10wlt62.xlyipyv.xuxw1ft').text
             following.append(userLink)
             if (len(following) == max):
                 break
@@ -131,7 +142,7 @@ class instaspy:
 
 
 if __name__ == '__main__':
-    InstaSpy_bot = instaspy('un_tio_humilde', 'b3zz@z@54.', 'erinaloureco15')
+    InstaSpy_bot = instaspy('un_tio_humilde', 'b3zz@z@54.', 'deenislav_')
     InstaSpy_bot.login()
     InstaSpy_bot.target_profile()
     followers_list = InstaSpy_bot.list_followers()
