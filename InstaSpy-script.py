@@ -5,7 +5,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 
-import User
+from User import User
 
 class instaspy:
     def __init__(self, username, password, target_username):
@@ -63,17 +63,16 @@ class instaspy:
 
         #clicking and opening followers tabs and getting maximum numbers of followers
         max = int(browser.find_element(By.CSS_SELECTOR, 'a[href*="/followers/"] span[title]').get_attribute('title'))
-
-        browser.find_element(By.CSS_SELECTOR, 'a[href*="/followers/"] span[title]').click()
+        browser.find_element(By.CSS_SELECTOR, 'a[href*="/followers/"]').click()
         sleep(2)
 
         # followersList = browser.find_element(By.CSS_SELECTOR, 'div[role=\'dialog\'] ul')
-        followersList = (browser.find_elements(By.CSS_SELECTOR, 'div[style*="position: relative"]'))[-1]
+        followersList = (browser.find_elements(By.CSS_SELECTOR, '.x9f619.xjbqb8w.x78zum5.x168nmei.x13lgxp2.x5pf9jr.xo71vjh.x1sxyh0.xurb0ha.x1uhb9sk.x6ikm8r.x1rife3k.x1iyjqo2.x2lwn1j.xeuugli.xdt5ytf.xqjyukv.x1qjc9v5.x1oa3qoh.x1nhvcw1'))[-1]
         numberOfFollowersInList = len(followersList.find_elements(By.XPATH, './div'))
         temp = [numberOfFollowersInList, 0]
-        followersList.click()
+        # followersList.click()
         
-        actionChain = webdriver.ActionChains(browser)
+        # actionChain = webdriver.ActionChains(browser)
         while (numberOfFollowersInList < max):
             # actionChain.key_down(Keys.SPACE).key_up(Keys.SPACE).perform()
             last_child = followersList.find_elements(By.XPATH, './div')[-1]
@@ -91,7 +90,11 @@ class instaspy:
         for user in followersList.find_elements(By.XPATH, './div'):
             # userLink = user.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
             userLink = user.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
-            img = user.find_element(By.CSS_SELECTOR, 'img').get_attribute('src')
+            try:
+                img = user.find_element(By.CSS_SELECTOR, 'img').get_attribute('src')
+            except:
+                img = None
+                continue
             username = user.find_element(By.CSS_SELECTOR, '._ap3a._aaco._aacw._aacx._aad7._aade').text
             name = user.find_element(By.CSS_SELECTOR, '.x1lliihq.x193iq5w.x6ikm8r.x10wlt62.xlyipyv.xuxw1ft').text
 
@@ -107,8 +110,10 @@ class instaspy:
 
         browser.get("https://www.instagram.com/"+self.target_username+"/")
         #clicking and opening following tabs and getting maximum numbers of following
-        max = int(browser.find_element(By.XPATH, "/html[1]/body[1]/div[1]/section[1]/main[1]/div[1]/header[1]/section[1]/ul[1]/li[3]/a[1]/span[1]").text.replace(',',''))
-        browser.find_element(By.XPATH, "//a[@class='-nal3 '][@href='/"+self.target_username+"/following/']").click()
+        # max = int(browser.find_element(By.XPATH, "/html[1]/body[1]/div[1]/section[1]/main[1]/div[1]/header[1]/section[1]/ul[1]/li[3]/a[1]/span[1]").text.replace(',',''))
+        max = int(browser.find_elements(By.CSS_SELECTOR, '.html-span.xdj266r.x11i5rnm.xat24cr.x1mh8g0r.xexx8yu.x4uap5.x18d9i69.xkhd6sd.x1hl2dhg.x16tdsg8.x1vvkbs')[2].text)
+        # browser.find_element(By.XPATH, "//a[@class='-nal3 '][@href='/"+self.target_username+"/following/']").click()
+        browser.find_element(By.CSS_SELECTOR, 'a[href*="/following/"]').click()
         sleep(0.5)
 
         followingList = browser.find_element(By.CSS_SELECTOR, 'div[role=\'dialog\'] ul')
@@ -142,7 +147,7 @@ class instaspy:
 
 
 if __name__ == '__main__':
-    InstaSpy_bot = instaspy('un_tio_humilde', 'b3zz@z@54.', 'deenislav_')
+    InstaSpy_bot = instaspy('mrr78_02', 'b3zzaza', 'ganchova')
     InstaSpy_bot.login()
     InstaSpy_bot.target_profile()
     followers_list = InstaSpy_bot.list_followers()
